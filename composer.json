@@ -1,7 +1,8 @@
 {
     "autoload": {
         "psr-4": {
-            "Fluent\\": "src"
+            "Fluent\\": "src",
+            "HtmlBuilder\\": "src/html"
         }
     },
     "require-dev": {
