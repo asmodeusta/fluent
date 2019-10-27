@@ -15,7 +15,7 @@ abstract class AbstractTag implements TagInterface
     private $parent;
 
     /**
-     * @var TagInterface[]|string
+     * @var array
      */
     private $inner;
 
@@ -24,11 +24,10 @@ abstract class AbstractTag implements TagInterface
      */
     private $attributes;
 
-    public function __construct(array $attributes = [], TagInterface $parent = null, array $inner = null)
+    public function __construct(array $attributes = [], array $inner = null)
     {
         $this->attributes = $attributes;
-        $this->parent = $parent;
-        $this->inner = $inner;
+        $this->inner = is_array($inner) ? $inner : [$inner];
     }
 
     public function __toString() : string
@@ -45,42 +44,49 @@ abstract class AbstractTag implements TagInterface
         }
         switch ($this->getType()) {
             case self::TYPE_SINGLE:
+                $string .= '/';
                 break;
             case self::TYPE_BOTH:
                 if (!empty($this->inner)) {
                     $this->renderInner($string);
+                } else {
+                    $string .= '/';
                 }
                 break;
             default:
                 $this->renderInner($string);
                 break;
         }
-        $string .= '/>';
+        $string .= '>';
 
         return $string;
     }
 
     private function renderInner(&$string) : string
     {
-        if (!is_array($this->inner)) {
-            $this->inner = [$this->inner];
-        }
         $string .= '>';
         foreach ($this->inner as $item) {
             $string .= $item;
         }
-        $string .= '<' . $this->getTagName();
+        $string .= '</' . $this->getTagName();
         return $string;
     }
 
     public function __call($name, $arguments) : TagInterface
     {
-        $className = __NAMESPACE__ . '\\' . ucfirst($name);
+        $className = __NAMESPACE__ . '\\Tags\\' . ucfirst($name);
         if (class_exists($className)) {
-            return new $className(...$arguments);
+            $newTag =  new $className($arguments[0], $arguments[1]);
+            $this->inner[] = $newTag;
+            return $newTag;
         } else {
             return $this;
         }
+    }
+
+    protected function addInner($inner)
+    {
+
     }
 
     abstract protected function getTagName() : string;
