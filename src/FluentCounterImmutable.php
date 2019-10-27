@@ -14,7 +14,7 @@ class FluentCounterImmutable implements FluentCounterInterface
 
     public function count() : FluentCounterInterface
     {
-        return new self(++$this->count);
+        return new self($this->count+1);
     }
 
     public function getCount() : int

@@ -1,12 +1,9 @@
 <?php
 
-
 namespace Fluent;
-
 
 class FluentCounter implements FluentCounterInterface
 {
-
     private $count;
 
     public function __construct(int $count)

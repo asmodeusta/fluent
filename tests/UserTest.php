@@ -44,7 +44,11 @@ class UserTest extends TestCase
              ->setPassword('y0U_sH@LL_N0t_p@55');
 
         $this->assertEquals(
-            ['id' => 666, 'name' => 'H@ck3R', 'password' => '******************'],
+            [
+                'id' => 666,
+                'name' => 'H@ck3R',
+                'password' => '******************'
+            ],
             $user->getData()
         );
     }
